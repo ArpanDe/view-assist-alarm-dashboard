@@ -119,13 +119,31 @@ export class ViewAssistControlCardEditor extends LitElement {
     try {
         const devices = await this.hass.callWS<any[]>({ type: "config/device_registry/list" });
         
-        // Filter for View Assist devices
+        // Filter for actual View Assist Satellite devices only
+        // Exclude integration entries
         this._devices = devices
         .filter((d: any) => {
-            const manuf = (d.manufacturer || "").toLowerCase();
             const model = (d.model || "").toLowerCase();
             const name = (d.name || "").toLowerCase();
-            return manuf.includes("view assist") || model.includes("view assist") || name.includes("view assist");
+            const manufacturer = (d.manufacturer || "").toLowerCase();
+            
+            // Skip integration entries
+            if (model.includes("(integration)") || name.includes("(integration)")) {
+                return false;
+            }
+            if (name.includes("companion app")) {
+                return false;
+            }
+            
+            // Look for actual satellite devices
+            if (model.includes("satellite") || name.includes("satellite")) {
+                return true;
+            }
+            if (manufacturer === "view assist" && !model.includes("integration")) {
+                return true;
+            }
+            
+            return false;
         })
         .map((d: any) => ({
             id: d.id,

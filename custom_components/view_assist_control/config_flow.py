@@ -33,17 +33,25 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         satellites = {}
         
         for device in device_registry.devices.values():
-            # Check for specific View Assist markings
-            # This logic depends on how View Assist registers devices. 
-            # Often they have a specific manufacturer or model.
-            # We'll check widely for 'View Assist' strings.
+            # Filter for actual View Assist Satellite devices only
+            # Exclude integration entries (they have "integration" in the model or name)
             is_satellite = False
-            if device.manufacturer and "View Assist" in device.manufacturer:
+            
+            model = device.model or ""
+            name = device.name or ""
+            manufacturer = device.manufacturer or ""
+            
+            # Skip integration entries
+            if "(integration)" in model.lower() or "(integration)" in name.lower():
+                continue
+            if "companion app" in name.lower():
+                continue
+                
+            # Look for actual satellite devices
+            # View Assist satellites typically have "Satellite" in the model or name
+            if "satellite" in model.lower() or "satellite" in name.lower():
                 is_satellite = True
-            elif device.model and "View Assist" in device.model:
-                is_satellite = True
-            elif device.name and "View Assist" in device.name:
-                # Fallback to name if manufacturer isn't set
+            elif manufacturer.lower() == "view assist" and "integration" not in model.lower():
                 is_satellite = True
             
             if is_satellite:
