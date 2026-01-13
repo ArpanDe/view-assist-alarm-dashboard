@@ -32,27 +32,19 @@ A Home Assistant Custom Component to expose [View Assist](https://github.com/din
 3.  Search for **View Assist Control**.
 4.  Select your View Assist Satellite from the list.
 
-## Lovelace Dashboard Example
+## Lovelace Card
+This repository also includes a custom Lovelace card with a **Visual Editor**.
 
-The component works great with `auto-entities` to show only active timers:
+### Installation
+1.  Ensure `dist/view-assist-control-card.js` is accessible in your `www` folder or installed via HACS (if configured).
+2.  Go to **Configuration** > **Dashboards** > **Resources**.
+3.  Add Resource:
+    *   URL: `/hacsfiles/view-assist-control/view-assist-control-card.js` (if via HACS)
+    *   *Or* `/local/view-assist-control-card.js` (if manual).
+    *   Type: JavaScript Module.
 
-```yaml
-type: custom:auto-entities
-card:
-  type: entities
-  title: Active Timers
-  show_header_toggle: false
-filter:
-  include:
-    - entity_id: switch.*_timer_*_control
-      state: "on"
-      options:
-        type: custom:template-entity-row
-        entity: this.entity_id
-        name: >
-          {{ states(config.entity.replace('switch', 'sensor').replace('_control', '')) }}
-        secondary: >
-          Ends at: {{ state_attr(config.entity.replace('switch', 'sensor').replace('_control', ''), 'finish_time') }}
-        toggle: true
-        icon: mdi:alarm
-```
+### Usage
+1.  Go to your Dashboard, click **Edit**.
+2.  Click **Add Card**.
+3.  Search for **View Assist Control**.
+4.  **Dropdown**: Use the dropdown menu to select your satellite! No Manual ID entry required.
