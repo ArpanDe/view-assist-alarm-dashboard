@@ -17,6 +17,15 @@ PLATFORMS = ["sensor", "switch"]
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the View Assist Control component."""
     hass.data.setdefault(DOMAIN, {})
+    
+    # Register static path for the custom card
+    path = hass.config.path(f"custom_components/{DOMAIN}/www/view-assist-control-card.js")
+    hass.http.register_static_path(
+        "/view_assist_control/view-assist-control-card.js",
+        path,
+        cache_headers=False # helpful for dev
+    )
+    
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):

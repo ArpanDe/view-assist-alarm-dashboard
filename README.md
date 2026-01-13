@@ -39,8 +39,7 @@ This repository also includes a custom Lovelace card with a **Visual Editor**.
 1.  Ensure `dist/view-assist-control-card.js` is accessible in your `www` folder or installed via HACS (if configured).
 2.  Go to **Configuration** > **Dashboards** > **Resources**.
 3.  Add Resource:
-    *   URL: `/hacsfiles/view-assist-control/view-assist-control-card.js` (if via HACS)
-    *   *Or* `/local/view-assist-control-card.js` (if manual).
+    *   URL: `/view_assist_control/view-assist-control-card.js`
     *   Type: JavaScript Module.
 
 ### Usage
