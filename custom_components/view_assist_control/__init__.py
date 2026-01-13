@@ -20,11 +20,23 @@ async def async_setup(hass: HomeAssistant, config: dict):
     
     # Register static path for the custom card
     path = hass.config.path(f"custom_components/{DOMAIN}/www/view-assist-control-card.js")
+    card_url = "/view_assist_control/view-assist-control-card.js"
+    
     hass.http.register_static_path(
-        "/view_assist_control/view-assist-control-card.js",
+        card_url,
         path,
-        cache_headers=False # helpful for dev
+        cache_headers=False 
     )
+
+    # Auto-register the Lovelace resource
+    try:
+        resources = hass.data["lovelace"]["resources"]
+        # Check if already exists
+        if not any(r["url"] == card_url for r in resources.async_items()):
+            _LOGGER.info("Auto-registering View Assist Control Card resource")
+            await resources.async_create_item({"res_type": "module", "url": card_url})
+    except Exception as e:
+        _LOGGER.warning(f"Could not auto-register Lovelace resource: {e}")
     
     return True
 
