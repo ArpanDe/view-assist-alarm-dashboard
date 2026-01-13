@@ -1,0 +1,35 @@
+type: vertical-stack
+cards:
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Active View Assist Timers
+      show_header_toggle: false
+    filter:
+      include:
+        - entity_id: switch.view_assist_control_timer_*_control
+          state: "on"
+          options:
+            type: custom:template-entity-row
+            entity: this.entity_id
+            name: >
+              {{ states(config.entity.replace('switch', 'sensor').replace('_control', '')) }}
+            secondary: >
+              Ends at: {{ state_attr(config.entity.replace('switch', 'sensor').replace('_control', ''), 'finish_time') }}
+            toggle: true
+            icon: mdi:alarm
+      exclude: []
+    sort:
+      method: name
+
+  - type: entities
+    title: Set New Alarm
+    cards:
+      - type: call-service
+        name: Set 5 Minute Timer
+        icon: mdi:timer-5
+        action_name: Set
+        service: view_assist.set_timer
+        service_data:
+          time: "5 minutes"
+          device_id: "YOUR_SATELLITE_DEVICE_ID"

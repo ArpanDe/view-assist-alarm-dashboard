@@ -1,0 +1,58 @@
+# View Assist Control
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+
+A Home Assistant Custom Component to expose [View Assist](https://github.com/dinki/View-Assist) timers and alarms as standard entities. This allows you to visualize and control your voice assistant timers directly from any Lovelace dashboard.
+
+## Features
+
+*   **Zero Configuration**: Automatically discovers your View Assist Satellites.
+*   **Standard Entities**: Creates `sensor` (status) and `switch` (control) entities for up to 5 concurrent timers per device.
+*   **UI Config Flow**: Setup everything through the Home Assistant Integrations page.
+*   **Device Targeting**: control specific satellites without messy automation lookups.
+
+## Installation
+
+### Option 1: HACS (Recommended)
+1.  Open HACS.
+2.  Go to "Integrations" > upper right menu > "Custom repositories".
+3.  Add the URL of this repository.
+4.  Search for "View Assist Control" and install.
+5.  Restart Home Assistant.
+
+### Option 2: Manual
+1.  Download the `custom_components/view_assist_control` folder.
+2.  Copy it to your Home Assistant's `config/custom_components/` directory.
+3.  Restart Home Assistant.
+
+## Configuration
+
+1.  Go to **Settings** > **Devices & Services**.
+2.  Click **Add Integration**.
+3.  Search for **View Assist Control**.
+4.  Select your View Assist Satellite from the list.
+
+## Lovelace Dashboard Example
+
+The component works great with `auto-entities` to show only active timers:
+
+```yaml
+type: custom:auto-entities
+card:
+  type: entities
+  title: Active Timers
+  show_header_toggle: false
+filter:
+  include:
+    - entity_id: switch.*_timer_*_control
+      state: "on"
+      options:
+        type: custom:template-entity-row
+        entity: this.entity_id
+        name: >
+          {{ states(config.entity.replace('switch', 'sensor').replace('_control', '')) }}
+        secondary: >
+          Ends at: {{ state_attr(config.entity.replace('switch', 'sensor').replace('_control', ''), 'finish_time') }}
+        toggle: true
+        icon: mdi:alarm
+```
